@@ -21,7 +21,7 @@ The system simulates multiple terminals:
 1. Fork or clone this repository
 2. Import the SQL file (ffos.sql) to MySQL database
 3. Set database credentials in config.php
-4. Run WebSocket server: `C:\xampp\php\php.exe ws-server.php`
+4. Run WebSocket server: `php ws-server.php`
 5. Access system via browser using `http://localhost/ffos/`
 
 ## Terminal Access
@@ -63,6 +63,10 @@ Apply enhancements through functional code modifications. UI or feature improvem
 - Each member must commit changes visibly to GitHub
 - Work should be distributed and traceable
 - Pull requests encouraged
+
+## Instructor Notes
+The system is intentionally imperfect for students to evaluate.
+Students must apply SAD thinking: Analyze then Improve.
 
 ## License
 Educational use only. Not for commercial deployment.

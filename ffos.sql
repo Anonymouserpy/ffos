@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 01, 2025 at 09:58 AM
+-- Generation Time: Dec 05, 2025 at 05:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -52,6 +52,30 @@ CREATE TABLE `bundle_items` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `bundle_items`
+--
+
+INSERT INTO `bundle_items` (`id`, `bundle_id`, `bundle_menu_item_id`, `menu_item_id`, `quantity`, `created_at`, `updated_at`) VALUES
+(5, 0, 6, 1, 1, '2025-12-01 16:48:23', '2025-12-01 16:48:23'),
+(6, 0, 6, 2, 1, '2025-12-01 16:48:23', '2025-12-01 16:48:23'),
+(9, 0, 7, 2, 1, '2025-12-01 16:49:25', '2025-12-01 16:49:25'),
+(10, 0, 7, 3, 1, '2025-12-01 16:49:25', '2025-12-01 16:49:25'),
+(25, 0, 9, 1, 1, '2025-12-01 16:53:46', '2025-12-01 16:53:46'),
+(26, 0, 9, 2, 1, '2025-12-01 16:53:46', '2025-12-01 16:53:46'),
+(27, 0, 9, 3, 1, '2025-12-01 16:53:46', '2025-12-01 16:53:46'),
+(28, 0, 9, 4, 1, '2025-12-01 16:53:46', '2025-12-01 16:53:46'),
+(29, 0, 9, 5, 1, '2025-12-01 16:53:46', '2025-12-01 16:53:46'),
+(30, 0, 45, 32, 1, '2025-12-01 16:54:00', '2025-12-01 16:54:00'),
+(31, 0, 45, 36, 1, '2025-12-01 16:54:00', '2025-12-01 16:54:00'),
+(32, 0, 45, 38, 1, '2025-12-01 16:54:00', '2025-12-01 16:54:00'),
+(33, 0, 45, 41, 1, '2025-12-01 16:54:00', '2025-12-01 16:54:00'),
+(34, 0, 46, 2, 1, '2025-12-02 03:37:09', '2025-12-02 03:37:09'),
+(35, 0, 46, 3, 1, '2025-12-02 03:37:09', '2025-12-02 03:37:09'),
+(36, 0, 46, 4, 1, '2025-12-02 03:37:09', '2025-12-02 03:37:09'),
+(37, 0, 48, 32, 1, '2025-12-02 16:37:10', '2025-12-02 16:37:10'),
+(38, 0, 48, 33, 1, '2025-12-02 16:37:10', '2025-12-02 16:37:10');
+
 -- --------------------------------------------------------
 
 --
@@ -74,20 +98,20 @@ CREATE TABLE `menu_items` (
 --
 
 INSERT INTO `menu_items` (`id`, `code`, `category_id`, `is_bundle`, `name`, `price`, `image_path`, `is_active`) VALUES
-(1, 'BIGMAC', NULL, 0, 'Big Mac Meal', 150.00, NULL, 0),
-(2, 'MCCHKN', NULL, 0, 'McChicken Meal', 140.00, NULL, 0),
-(3, 'FRIESL', NULL, 0, 'Large Fries', 60.00, NULL, 0),
-(4, 'COKEL', NULL, 0, 'Large Coke', 45.00, NULL, 0),
+(1, 'BIGMAC', 3, 0, 'Big Mac Meal', 150.00, '', 0),
+(2, 'MCCHKN', 2, 0, 'McChicken Meal', 140.00, 'uploads/prod_692dbd5ad47556.07775420.jpg', 1),
+(3, 'FRIESL', 3, 0, 'Large Friesasdas', 60.00, '', 1),
+(4, 'COKEL', 4, 0, 'Large Cokeasd', 45.00, '', 1),
 (5, 'wfwqfwq', 1, 0, 'safasf', 51581.00, 'uploads/prod_692cfa68962f31.90440074.jpg', 0),
-(6, 'dsada', NULL, 1, 'jkanbjksak', 815.00, NULL, 0),
-(7, 'sada', NULL, 1, 'dasd', 51881.00, NULL, 0),
+(6, 'dsada', NULL, 1, 'jkanbjksak', 290.00, '', 1),
+(7, 'sada', NULL, 1, 'idk', 200.00, '', 1),
 (8, 'ww', 1, 0, 'sda', 242.00, NULL, 0),
-(9, 'llp', NULL, 1, 'wet', 105.00, NULL, 0),
+(9, 'llp', NULL, 1, 'this is the example bundle', 51976.00, 'uploads/prod_692dc80716d5b0.35739020.jpg', 0),
 (10, 'tew', NULL, 1, 'tew', 340.00, NULL, 0),
-(11, 'hhh', NULL, 1, 'n', 45.00, NULL, 0),
+(11, 'hhh', 1, 1, 'n', 45.00, NULL, 0),
 (12, 'wwrt', 2, 0, 'efawefg', 325325.00, NULL, 0),
 (27, 'BRG001', 1, 0, 'Classic Cheeseburger', 79.00, 'images/burger1.jpg', 1),
-(28, 'BRG002', 1, 0, 'Beef BBQ Burger', 99.00, 'images/burger2.jpg', 1),
+(28, 'BRG002', 1, 0, 'Beef BBQ Burger', 99.00, 'uploads/prod_692dc8763d91d6.20835903.jpg', 1),
 (29, 'BRG003', 1, 0, 'Double Patty Stack', 129.00, 'images/burger3.jpg', 1),
 (30, 'CHK001', 2, 0, '1-PC Crispy Chicken', 89.00, 'images/chicken1.jpg', 1),
 (31, 'CHK002', 2, 0, '2-PC Chicken with Rice', 149.00, 'images/chicken2.jpg', 1),
@@ -100,7 +124,12 @@ INSERT INTO `menu_items` (`id`, `code`, `category_id`, `is_bundle`, `name`, `pri
 (38, 'DST001', 5, 0, 'Vanilla Sundae', 45.00, 'images/sundae1.jpg', 1),
 (39, 'DST002', 5, 0, 'Choco Sundae', 55.00, 'images/sundae2.jpg', 1),
 (40, 'DST003', 5, 0, 'Apple Pie', 49.00, 'images/pie1.jpg', 1),
-(41, 'CHKNGTS', 2, 0, 'Chicken Nuggets', 100.00, NULL, 1);
+(41, 'CHKNGTS', 2, 0, 'Chicken Nuggets', 100.00, '', 0),
+(44, 'cokefloat', 4, 0, 'Coke Float', 20.00, 'uploads/prod_692dbdd9e652b0.21708948.jpg', 1),
+(45, 'mix and match', NULL, 1, 'Mix & Match', 214.00, 'uploads/prod_692dc82898e286.83312103.jpg', 1),
+(46, 'gkjkj', NULL, 1, 'jjhj', 245.00, NULL, 1),
+(47, 'dfasdfsadfsa', 5, 0, 'asdfas', 23123123.00, 'uploads/prod_692f1352e92111.26735908.jpg', 1),
+(48, 'asdasd', NULL, 1, 'asdsdasd', 98.00, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -208,7 +237,31 @@ INSERT INTO `orders` (`id`, `terminal_id`, `teller_terminal_id`, `total_amount`,
 (79, 1, 2, 645.00, 99999999.99, 99999999.99, 'CLAIMED', '2025-12-01 01:58:26', '2025-12-01 01:58:15', '2025-12-01 01:58:40', 78),
 (80, 1, 2, 328.00, 4565.00, 4237.00, 'READY_FOR_CLAIM', '2025-12-01 01:58:46', '2025-12-01 01:58:41', '2025-12-01 01:58:54', 79),
 (81, 1, 2, 125.00, 5555.00, 5430.00, 'IN_PROCESS', '2025-12-01 01:58:53', '2025-12-01 01:58:48', '2025-12-01 01:58:53', 80),
-(82, 1, NULL, 180.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-01 01:58:56', '2025-12-01 01:58:56', 81);
+(82, 1, NULL, 180.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-01 01:58:56', '2025-12-01 01:58:56', 81),
+(83, 1, 2, 214.00, 250.00, 36.00, 'IN_PROCESS', '2025-12-02 08:49:15', '2025-12-02 08:25:48', '2025-12-02 08:49:15', 1),
+(84, 2, NULL, 290.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 08:54:59', '2025-12-02 08:54:59', 2),
+(85, 2, NULL, 290.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:07:28', '2025-12-02 09:07:28', 3),
+(86, 2, NULL, 1160.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:07:42', '2025-12-02 09:07:42', 4),
+(87, 2, NULL, 980.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:08:13', '2025-12-02 09:08:13', 5),
+(88, 2, NULL, 290.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:08:34', '2025-12-02 09:08:34', 6),
+(89, 2, NULL, 245.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:09:07', '2025-12-02 09:09:07', 7),
+(90, 1, NULL, 200.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:09:57', '2025-12-02 09:09:57', 8),
+(91, 1, NULL, 245.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:14:20', '2025-12-02 09:14:20', 9),
+(92, 1, NULL, 459.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:19:19', '2025-12-02 09:19:19', 10),
+(93, 1, NULL, 290.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:26:03', '2025-12-02 09:26:03', 11),
+(94, 1, NULL, 23123123.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:27:24', '2025-12-02 09:27:24', 12),
+(95, 1, NULL, 245.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:28:41', '2025-12-02 09:28:41', 13),
+(96, 1, NULL, 414.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:33:57', '2025-12-02 09:33:57', 14),
+(97, 2, NULL, 200.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:34:15', '2025-12-02 09:34:15', 15),
+(98, 1, NULL, 245.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:35:29', '2025-12-02 09:35:29', 16),
+(99, 1, NULL, 290.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:35:44', '2025-12-02 09:35:44', 17),
+(100, 1, NULL, 1070.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:36:21', '2025-12-02 09:36:21', 18),
+(101, 1, NULL, 98.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:37:27', '2025-12-02 09:37:27', 19),
+(102, 1, NULL, 890.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 09:41:03', '2025-12-02 09:41:03', 20),
+(103, 1, 2, 200.00, 200.00, 0.00, 'CLAIMED', '2025-12-02 19:54:01', '2025-12-02 19:46:12', '2025-12-03 05:09:32', 1),
+(104, 1, NULL, 596.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 19:55:08', '2025-12-02 19:55:08', 2),
+(105, 1, 2, 200.00, 200.00, 0.00, 'CLAIMED', '2025-12-03 05:08:12', '2025-12-03 05:07:39', '2025-12-03 05:09:35', 3),
+(106, 1, 2, 98.00, 100.00, 2.00, 'IN_PROCESS', '2025-12-04 21:21:50', '2025-12-04 21:21:25', '2025-12-04 21:21:50', 1);
 
 -- --------------------------------------------------------
 
@@ -421,7 +474,36 @@ INSERT INTO `order_items` (`id`, `order_id`, `menu_item_id`, `quantity`, `price`
 (356, 80, 30, 2, 89.00, 'CUSTOMER', 0.00),
 (357, 80, 37, 6, 25.00, 'CUSTOMER', 0.00),
 (359, 81, 37, 5, 25.00, 'CUSTOMER', 0.00),
-(360, 82, 36, 6, 30.00, 'CUSTOMER', 0.00);
+(360, 82, 36, 6, 30.00, 'CUSTOMER', 0.00),
+(362, 83, 45, 1, 214.00, 'CUSTOMER', 0.00),
+(363, 84, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(364, 85, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(365, 86, 6, 4, 290.00, 'CUSTOMER', 0.00),
+(366, 87, 46, 4, 245.00, 'CUSTOMER', 0.00),
+(367, 88, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(368, 89, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(369, 90, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(370, 91, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(371, 92, 45, 1, 214.00, 'CUSTOMER', 0.00),
+(372, 92, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(373, 93, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(374, 94, 47, 1, 23123123.00, 'CUSTOMER', 0.00),
+(375, 95, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(376, 96, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(377, 96, 45, 1, 214.00, 'CUSTOMER', 0.00),
+(378, 97, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(379, 98, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(380, 99, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(381, 100, 6, 2, 290.00, 'CUSTOMER', 0.00),
+(382, 100, 46, 2, 245.00, 'CUSTOMER', 0.00),
+(383, 101, 48, 1, 98.00, 'CUSTOMER', 0.00),
+(384, 102, 7, 2, 200.00, 'CUSTOMER', 0.00),
+(385, 102, 46, 2, 245.00, 'CUSTOMER', 0.00),
+(387, 103, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(388, 104, 7, 2, 200.00, 'CUSTOMER', 0.00),
+(389, 104, 48, 2, 98.00, 'CUSTOMER', 0.00),
+(391, 105, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(393, 106, 48, 1, 98.00, 'CUSTOMER', 0.00);
 
 -- --------------------------------------------------------
 
@@ -541,25 +623,25 @@ ALTER TABLE `bundles`
 -- AUTO_INCREMENT for table `bundle_items`
 --
 ALTER TABLE `bundle_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=361;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=394;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
@@ -581,7 +663,6 @@ ALTER TABLE `terminals`
 -- Constraints for table `bundle_items`
 --
 ALTER TABLE `bundle_items`
-  ADD CONSTRAINT `fk_bundle_items_bundle` FOREIGN KEY (`bundle_id`) REFERENCES `bundles` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_bundle_items_menu_item` FOREIGN KEY (`bundle_menu_item_id`) REFERENCES `menu_items` (`id`) ON DELETE CASCADE;
 
 --
