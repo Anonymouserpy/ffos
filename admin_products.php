@@ -45,9 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Create category
     if ($action === 'create_category') {
         $name = trim($_POST['category_name'] ?? '');
+        $imagePath = handle_image_upload('category_image');  // Handle image upload
         if ($name !== '') {
-            $stmt = $pdo->prepare("INSERT INTO product_categories (name) VALUES (?)");
-            $stmt->execute([$name]);
+            $stmt = $pdo->prepare("INSERT INTO product_categories (name, img) VALUES (?, ?)");
+            $stmt->execute([$name, $imagePath]);
         }
     }
 
@@ -55,14 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'edit_category') {
         $id   = (int)($_POST['category_id'] ?? 0);
         $name = trim($_POST['category_name'] ?? '');
+        $imagePath = handle_image_upload('category_image');  // Handle image upload
         if ($id > 0 && $name !== '') {
-            $stmt = $pdo->prepare("UPDATE product_categories SET name = ? WHERE id = ?");
-            $stmt->execute([$name, $id]);
+            if ($imagePath !== null) {
+                $stmt = $pdo->prepare("UPDATE product_categories SET name = ?, img = ? WHERE id = ?");
+                $stmt->execute([$name, $imagePath, $id]);
+            } else {
+                // If no new image, update only the name
+                $stmt = $pdo->prepare("UPDATE product_categories SET name = ? WHERE id = ?");
+                $stmt->execute([$name, $id]);
+            }
             echo "<script>alert('Category updated successfully!');</script>";
         } else {
             echo "<script>alert('Error: Invalid category data!');</script>";
         }
     }
+
 
     // Create product
     if ($action === 'create_product') {
@@ -515,7 +524,7 @@ $stats = [
     <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form method="post" id="categoryForm">
+                <form method="post" id="categoryForm" enctype="multipart/form-data">
                     <div class="modal-header py-2">
                         <h5 class="modal-title" id="categoryModalTitle">Category</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -530,6 +539,10 @@ $stats = [
                             <input type="text" name="category_name" id="categoryName"
                                 class="form-control form-control-sm" required>
                         </div>
+                        <div class="mb-2">
+                            <label class="form-label mb-1">Category Image (optional)</label>
+                            <input type="file" name="category_image" class="form-control form-control-sm">
+                        </div>
                     </div>
                     <div class="modal-footer py-2">
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -539,6 +552,7 @@ $stats = [
             </div>
         </div>
     </div>
+
 
     <!-- PRODUCT MODAL -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
@@ -811,8 +825,8 @@ $stats = [
         imageViewModal.show();
     }
 
-    // --- Product modal open ---
-    function openProductModal(mode, id = null, name = '', code = '', price = '', catId = 0, imgPath = '', active = 0) {
+    // --- Category modal open ---
+    function openCategoryModal(mode, id = null, name = '') {
         const title = document.getElementById('categoryModalTitle');
         const action = document.getElementById('categoryAction');
         const idInput = document.getElementById('categoryId');
@@ -982,6 +996,7 @@ $stats = [
         bundleViewModal.show();
     }
     </script>
+
 </body>
 
 </html>

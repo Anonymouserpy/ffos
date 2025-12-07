@@ -8,17 +8,17 @@ if ($_SESSION['terminal_type'] !== 'CUSTOMER') {
 
 require_once 'config.php';
 
-// Fetch categories
+// Fetch categories (now including img)
 $catStmt = $pdo->query("
-    SELECT id, name
+    SELECT id, name, img
     FROM product_categories
     ORDER BY name
 ");
 $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch all active menu items (with category)
+// Fetch all active menu items (with category and is_bundle)
 $itemStmt = $pdo->query("
-    SELECT m.id, m.name, m.price, m.image_path, c.name AS category_name, c.id AS category_id
+    SELECT m.id, m.name, m.price, m.image_path, m.is_bundle, c.name AS category_name, c.id AS category_id
     FROM menu_items m
     LEFT JOIN product_categories c ON c.id = m.category_id
     WHERE m.is_active = 1
@@ -27,505 +27,675 @@ $itemStmt = $pdo->query("
 $items = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Customer Kiosk</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drink Ordering Kiosk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f3f4f6;
-            font-size: 0.95rem;
-            padding-bottom: 160px; /* space for sticky footer cart */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Roboto', Arial, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+        overflow: hidden;
+    }
+
+    .kiosk {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+    }
+
+    .banner {
+        background: linear-gradient(135deg, #d4680eff);
+        padding: 20px 30px;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+    }
+
+    .banner h2 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .banner p {
+        margin: 5px 0 0;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+
+    .logout-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.1);
+    }
+
+    .main {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        width: 300px;
+        background: #ffffff;
+        border-right: 1px solid #e0e0e0;
+        overflow-y: auto;
+        flex-shrink: 0;
+        box-shadow: inset -1px 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar li {
+        padding: 15px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background 0.3s ease, color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .sidebar li:hover {
+        background: #f9f9f9;
+    }
+
+    .sidebar .active {
+        background: #ff9900ff;
+        color: #fff;
+        font-weight: 700;
+        border-left: 4px solid #cc1010ff;
+    }
+
+    .category-img {
+        width: 24px;
+        height: 24px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .products {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        padding: 20px;
+        gap: 20px;
+        overflow-y: auto;
+        background: #f9f9f9;
+    }
+
+    .item {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        text-align: center;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 200px;
+        /* Fixed height for uniform boxes */
+        position: relative;
+    }
+
+
+    .item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border-color: #ff0000ff;
+    }
+
+    .item img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #ddd;
+        margin-bottom: 10px;
+    }
+
+    .item .name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+        line-height: 1.2;
+    }
+
+    .item .price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #ff0000ff;
+    }
+
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f0f0f0;
+        padding: 15px 30px;
+        border-top: 1px solid #ddd;
+        flex-shrink: 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel {
+        background: #dc3545;
+        border: none;
+        padding: 12px 24px;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .cancel:hover {
+        background: #c82333;
+        transform: scale(1.05);
+    }
+
+    .pay {
+        background: #28a745;
+        border: none;
+        padding: 12px 24px;
+        color: white;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .pay:hover {
+        background: #218838;
+        transform: scale(1.05);
+    }
+
+    .total {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #333;
+    }
+
+    /* Modal for cart */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
         }
 
-        .navbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80%;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .close {
+        cursor: pointer;
+        font-size: 24px;
+        color: #999;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover {
+        color: #333;
+    }
+
+    .modal-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .modal-body th,
+    .modal-body td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .modal-body th {
+        background: #f9f9f9;
+        font-weight: 600;
+    }
+
+    .modal-body input[type="number"] {
+        width: 60px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .modal-body button {
+        background: #dc3545;
+        border: none;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.3s ease;
+    }
+
+    .modal-body button:hover {
+        background: #c82333;
+    }
+
+    .modal-total {
+        text-align: right;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #28a745;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background: #218838;
+    }
+
+    /* Loading state */
+    .loading {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+        color: #666;
+    }
+
+    /* Accessibility */
+    .sidebar li:focus,
+    .item:focus,
+    .cancel:focus,
+    .pay:focus,
+    .logout-btn:focus,
+    .close:focus,
+    .submit-btn:focus {
+        outline: 2px solid #007bff;
+        outline-offset: 2px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 250px;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            letter-spacing: 0.05em;
+        .products {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            padding: 15px;
         }
 
-        .category-list {
-            position: sticky;
-            top: 70px;
-            max-height: calc(100vh - 90px);
-            overflow-y: auto;
+        .banner h2 {
+            font-size: 1.5rem;
         }
 
-        .category-btn {
-            text-align: left;
-        }
-
-        .product-grid {
-            max-height: calc(100vh - 90px);
-            overflow-y: auto;
-            padding-bottom: 0.5rem;
-        }
-
-        .product-card {
-            border-radius: 0.75rem;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(15,23,42,0.08);
-            border: 1px solid #e5e7eb;
-            position: relative;
-            height: 100%;
-            display: flex;
+        .footer {
+            padding: 10px 20px;
             flex-direction: column;
+            gap: 10px;
         }
 
-        .product-img {
-            height: 140px;
-            object-fit: cover;
-            width: 100%;
+        .total {
+            order: -1;
         }
-
-        .product-body {
-            padding: 0.6rem 0.75rem 0.75rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-name {
-            font-weight: 600;
-            margin-bottom: 0.1rem;
-        }
-
-        .product-price {
-            font-weight: 700;
-            color: #b91c1c;
-        }
-
-        .category-ribbon {
-            position: absolute;
-            top: 0.45rem;
-            right: -0.3rem;
-            background: #111827;
-            color: #f9fafb;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px 0 0 999px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Sticky footer cart */
-        .cart-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1f2937;
-            color: #f9fafb;
-            padding: 0.5rem 1rem;
-            box-shadow: 0 -4px 15px rgba(15,23,42,0.6);
-            z-index: 1050;
-        }
-
-        .cart-summary {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .cart-items-inline {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            max-width: 400px;
-        }
-
-        .cart-pill {
-            background: #374151;
-            border-radius: 999px;
-            padding: 0.2rem 0.55rem;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .cart-pill strong {
-            color: #fbbf24;
-        }
-
-        .cart-total {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        @media (max-width: 768px) {
-            .cart-summary {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        /* Cart modal */
-        .modal-cart-table thead th {
-            position: sticky;
-            top: 0;
-            background-color: #f9fafb;
-            z-index: 5;
-        }
+    }
     </style>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg navbar-light mb-2">
-    <div class="container-fluid">
-        <span class="navbar-brand">SELF-SERVICE ORDERING</span>
-        <div class="ms-auto">
-            <a href="logout.php" class="btn btn-outline-dark btn-sm">Logout</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container-fluid">
-    <div class="row g-3">
-        <!-- Categories -->
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-header py-2">
-                    <strong>Categories</strong>
-                </div>
-                <div class="card-body p-2 category-list">
-                    <div class="d-grid gap-1">
-                        <button class="btn btn-sm btn-primary category-btn"
-                                data-category="ALL"
-                                onclick="filterCategory('ALL')">
-                            All
-                        </button>
-                        <?php foreach ($categories as $c): ?>
-                            <button class="btn btn-sm btn-outline-secondary category-btn"
-                                    data-category="<?= (int)$c['id'] ?>"
-                                    onclick="filterCategory('<?= (int)$c['id'] ?>')">
-                                <?= htmlspecialchars($c['name'] ?? '') ?>
-                            </button>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
+    <div class="kiosk">
+        <!-- Top Banner -->
+        <div class="banner">
+            <button class="logout-btn" onclick="logout()" title="Logout" aria-label="Logout">×</button>
+            <h2>Self Service Ordering </h2>
+            <p>Select your favorite drinks and proceed to checkout</p>
         </div>
 
-        <!-- Products -->
-        <div class="col-md-10">
-            <div class="product-grid">
-                <div class="row g-3" id="productsContainer">
-                    <?php foreach ($items as $p): ?>
-                        <div class="col-sm-6 col-md-4 col-lg-3 product-card-wrapper"
-                             data-category-id="<?= (int)($p['category_id'] ?? 0) ?>">
-                            <div class="product-card">
-                                <?php if (!empty($p['category_name'])): ?>
-                                    <div class="category-ribbon">
-                                        <?= htmlspecialchars($p['category_name']) ?>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if (!empty($p['image_path']) && file_exists($p['image_path'])): ?>
-                                    <img src="<?= htmlspecialchars($p['image_path']) ?>"
-                                         class="product-img"
-                                         alt="<?= htmlspecialchars($p['name'] ?? '') ?>">
-                                <?php else: ?>
-                                    <div class="product-img d-flex align-items-center justify-content-center bg-light text-muted">
-                                        No Image
-                                    </div>
-                                <?php endif; ?>
-                                <div class="product-body">
-                                    <div class="product-name"><?= htmlspecialchars($p['name'] ?? '') ?></div>
-                                    <div class="product-price mb-2">
-                                        ₱<?= number_format((float)$p['price'], 2) ?>
-                                    </div>
-                                    <div class="mt-auto d-grid">
-                                        <button class="btn btn-sm btn-success"
-                                                onclick="addToCart(
-                                                    <?= (int)$p['id'] ?>,
-                                                    '<?= htmlspecialchars($p['name'] ?? '', ENT_QUOTES) ?>',
-                                                    <?= (float)$p['price'] ?>,
-                                                    '<?= htmlspecialchars($p['category_name'] ?? '', ENT_QUOTES) ?>'
-                                                )">
-                                            Add to Order
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Menu Section -->
+        <div class="main">
+            <!-- Left Sidebar Menu -->
+            <div class="sidebar">
+                <ul>
+                    <li class="active" data-category="BUNDLES" onclick="filterCategory('BUNDLES')" tabindex="0">Bundles
+                    </li>
+                    <?php foreach ($categories as $c): ?>
+                    <li data-category="<?= (int)$c['id'] ?>" onclick="filterCategory('<?= (int)$c['id'] ?>')"
+                        tabindex="0">
+                        <?php if (!empty($c['img'])): ?>
+                        <img src="<?= htmlspecialchars($c['img']) ?>" class="category-img"
+                            alt="<?= htmlspecialchars($c['name'] ?? '') ?>">
+                        <?php endif; ?>
+                        <?= htmlspecialchars($c['name'] ?? '') ?>
+                    </li>
                     <?php endforeach; ?>
-                    <?php if (!$items): ?>
-                        <div class="col-12 text-center text-muted mt-3">
-                            No products available.
-                        </div>
+                </ul>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="products" id="productsContainer">
+                <?php foreach ($items as $p): ?>
+                <div class="item" data-category-id="<?= (int)($p['category_id'] ?? 0) ?>"
+                    data-is-bundle="<?= (int)$p['is_bundle'] ?>"
+                    onclick="addToCart(<?= (int)$p['id'] ?>, '<?= htmlspecialchars($p['name'] ?? '', ENT_QUOTES) ?>', <?= (float)$p['price'] ?>, '<?= htmlspecialchars($p['category_name'] ?? '', ENT_QUOTES) ?>')"
+                    tabindex="0">
+                    <?php if (!empty($p['image_path']) && file_exists($p['image_path'])): ?>
+                    <img src="<?= htmlspecialchars($p['image_path']) ?>"
+                        alt="<?= htmlspecialchars($p['name'] ?? '') ?>">
+                    <?php else: ?>
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4="
+                        alt="No Image">
                     <?php endif; ?>
+                    <div class="name"><?= htmlspecialchars($p['name'] ?? '') ?></div>
+                    <div class="price">₱<?= number_format((float)$p['price'], 2) ?></div>
+                </div>
+                <?php endforeach; ?>
+                <?php if (!$items): ?>
+                <div class="item" style="grid-column: span 2;">
+                    <p>No drinks available at the moment.</p>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Footer Order Bar -->
+        <div class="footer">
+            <button class="cancel" onclick="clearCart()" aria-label="Cancel Order">Cancel Order</button>
+            <button class="pay" onclick="openCartModal()" aria-label="Review and Pay">Review & Pay</button>
+            <div class="total">Total: ₱<span id="cartTotalAmount">0.00</span></div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal" role="dialog" aria-labelledby="cartModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cartModalTitle">Your Order</h3>
+                <span class="close" onclick="closeCartModal()" aria-label="Close Modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Drink</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartModalBody">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+                <div class="modal-total">
+                    <strong>Total: ₱<span id="cartModalTotal">0.00</span></strong>
                 </div>
             </div>
+            <button class="submit-btn" id="submitBtn" onclick="submitOrder()" aria-label="Submit Order">Submit
+                Order</button>
+            <div class="success-message" id="successMessage"></div>
+            <div class="loading" id="loadingIndicator">Processing...</div>
         </div>
     </div>
-</div>
 
-<!-- Sticky Cart Footer -->
-<div class="cart-footer">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div class="cart-summary">
-            <div>
-                <div class="small text-gray-300">Your Order</div>
-                <div>
-                    <span id="cartItemCount">0</span> item(s)
-                </div>
-            </div>
-            <div class="cart-items-inline" id="cartInlineList">
-                <!-- Pills of items, filled by JS -->
-            </div>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <div class="cart-total me-3">
-                Total: ₱<span id="cartTotalAmount">0.00</span>
-            </div>
-            <button type="button"
-                    class="btn btn-outline-light btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#cartItemsModal"
-                    onclick="renderCartModal()">
-                View Items
-            </button>
-            <button id="submitOrderBtn"
-                    class="btn btn-warning btn-sm text-dark fw-bold"
-                    onclick="submitOrder()"
-                    disabled>
-                Submit Order
-            </button>
-        </div>
-    </div>
-    <div class="mt-1 small" id="orderResult"></div>
-</div>
+    <script>
+    let currentCategoryFilter = 'BUNDLES';
+    let cart = {}; // id -> {id, name, price, qty, category}
 
-<!-- Cart Items Modal -->
-<div class="modal fade" id="cartItemsModal" tabindex="-1" aria-labelledby="cartItemsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header py-2">
-        <h5 class="modal-title" id="cartItemsModalLabel">Your Order Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body p-2">
-        <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
-            <table class="table table-sm align-middle modal-cart-table">
-                <thead class="table-light">
-                    <tr>
-                        <th>Item</th>
-                        <th class="text-center" style="width:80px;">Qty</th>
-                        <th class="text-end" style="width:100px;">Price</th>
-                        <th class="text-end" style="width:100px;">Subtotal</th>
-                        <th style="width:60px;" class="text-end"></th>
-                    </tr>
-                </thead>
-                <tbody id="cartModalBody">
-                    <!-- filled by JS -->
-                </tbody>
-            </table>
-        </div>
-      </div>
-      <div class="modal-footer py-2">
-        <div class="me-auto">
-            <strong>Total: ₱<span id="cartModalTotal">0.00</span></strong>
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+    function filterCategory(catId) {
+        currentCategoryFilter = catId;
+        document.querySelectorAll('.sidebar li').forEach(li => {
+            li.classList.toggle('active', li.dataset.category === catId);
+        });
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-let currentCategoryFilter = 'ALL';
-let cart = {}; // id -> {id, name, price, qty, category}
-
-function filterCategory(catId) {
-    currentCategoryFilter = catId;
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        if (btn.dataset.category === catId) {
-            btn.classList.remove('btn-outline-secondary');
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-primary');
-        } else {
-            btn.classList.remove('btn-primary');
-            if (btn.dataset.category === 'ALL') {
-                btn.classList.add('btn-outline-secondary');
+        document.querySelectorAll('#productsContainer .item').forEach(item => {
+            const itemCat = item.dataset.categoryId || '0';
+            const isBundle = item.dataset.isBundle === '1';
+            if (catId === 'BUNDLES') {
+                item.style.display = isBundle ? 'block' : 'none';
             } else {
-                btn.classList.add('btn-outline-secondary');
+                item.style.display = (catId === itemCat) ? 'block' : 'none';
             }
-        }
-    });
-
-    document.querySelectorAll('#productsContainer .product-card-wrapper').forEach(card => {
-        const itemCat = card.dataset.categoryId || '0';
-        if (catId === 'ALL' || catId === itemCat) {
-            card.classList.remove('d-none');
-        } else {
-            card.classList.add('d-none');
-        }
-    });
-}
-
-function addToCart(id, name, price, category) {
-    id = String(id);
-    if (!cart[id]) {
-        cart[id] = {id: id, name: name, price: parseFloat(price), qty: 0, category: category};
-    }
-    cart[id].qty++;
-    updateCartUI();
-}
-
-function updateCartUI() {
-    let totalQty = 0;
-    let totalAmount = 0;
-    const inlineList = document.getElementById('cartInlineList');
-    inlineList.innerHTML = '';
-
-    Object.values(cart).forEach(item => {
-        if (item.qty <= 0) return;
-        totalQty += item.qty;
-        totalAmount += item.qty * item.price;
-
-        const pill = document.createElement('div');
-        pill.className = 'cart-pill';
-        pill.innerHTML = `<strong>${item.qty}×</strong> ${item.name}`;
-        inlineList.appendChild(pill);
-    });
-
-    document.getElementById('cartItemCount').textContent = totalQty;
-    document.getElementById('cartTotalAmount').textContent = totalAmount.toFixed(2);
-    document.getElementById('submitOrderBtn').disabled = (totalQty === 0);
-
-    // also reflect in modal total if open
-    document.getElementById('cartModalTotal').textContent = totalAmount.toFixed(2);
-}
-
-// Renders items inside the modal
-function renderCartModal() {
-    const tbody = document.getElementById('cartModalBody');
-    tbody.innerHTML = '';
-
-    let totalAmount = 0;
-
-    const items = Object.values(cart).filter(i => i.qty > 0);
-    if (!items.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center text-muted py-3">
-                    Your cart is empty.
-                </td>
-            </tr>`;
-    } else {
-        items.forEach(item => {
-            const sub = item.price * item.qty;
-            totalAmount += sub;
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(item.name)}</td>
-                <td class="text-center">
-                    <input type="number"
-                           min="1"
-                           value="${item.qty}"
-                           class="form-control form-control-sm text-center"
-                           style="width:70px;"
-                           onchange="changeCartQty('${item.id}', this.value)">
-                </td>
-                <td class="text-end">₱${item.price.toFixed(2)}</td>
-                <td class="text-end">₱${sub.toFixed(2)}</td>
-                <td class="text-end">
-                    <button type="button"
-                            class="btn btn-sm btn-outline-danger"
-                            onclick="removeFromCart('${item.id}')">
-                        &times;
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(tr);
         });
     }
 
-    document.getElementById('cartModalTotal').textContent = totalAmount.toFixed(2);
-}
-
-function changeCartQty(id, value) {
-    id = String(id);
-    let qty = parseInt(value, 10);
-    if (isNaN(qty) || qty <= 0) {
-        delete cart[id];
-    } else {
-        if (!cart[id]) return;
-        cart[id].qty = qty;
+    function addToCart(id, name, price, category) {
+        id = String(id);
+        if (!cart[id]) {
+            cart[id] = {
+                id,
+                name,
+                price: parseFloat(price),
+                qty: 0,
+                category
+            };
+        }
+        cart[id].qty++;
+        updateCartUI();
     }
-    updateCartUI();
-    renderCartModal();
-}
 
-function removeFromCart(id) {
-    id = String(id);
-    if (cart[id]) {
-        delete cart[id];
+    function updateCartUI() {
+        let totalAmount = 0;
+        Object.values(cart).forEach(item => {
+            totalAmount += item.qty * item.price;
+        });
+        document.getElementById('cartTotalAmount').textContent = totalAmount.toFixed(2);
     }
-    updateCartUI();
-    renderCartModal();
-}
 
-// Submit order to backend
-function submitOrder() {
-    const items = Object.values(cart).filter(i => i.qty > 0);
-    if (!items.length) return;
-
-    const payload = items.map(i => ({
-        id: i.id,
-        qty: i.qty,
-        price: i.price
-    }));
-
-    const fd = new FormData();
-    fd.append('items', JSON.stringify(payload));
-
-    fetch('api_create_order.php', {
-        method: 'POST',
-        body: fd
-    })
-        .then(r => r.json())
-        .then(res => {
-            if (!res.success) {
-                alert(res.error || 'Error creating order.');
-                return;
-            }
-
-            const displayNum = res.order_number ?? res.order_id;
-            const resultDiv = document.getElementById('orderResult');
-            resultDiv.innerHTML =
-                `Your Order Number: <span class="text-warning fw-bold h5 mb-0">${displayNum}</span> ` +
-                `<span class="small text-white-50 ms-2">Please present this to the teller.</span><button onclick="window.location.replace(window.location.href);" class="btn btn-warning ms-3">New Order</button>`;
-
-            // reset cart
+    function clearCart() {
+        if (confirm('Are you sure you want to clear the cart?')) {
             cart = {};
             updateCartUI();
-        })
-        .catch(() => {
-            alert('Network error submitting order.');
-        });
-}
+            closeCartModal();
+        }
+    }
 
-function escapeHtml(str) {
-    if (str == null) return '';
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
+    function openCartModal() {
+        renderCartModal();
+        document.getElementById('cartModal').style.display = 'flex';
+        document.getElementById('successMessage').style.display = 'none'; // Hide success message when opening
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').textContent = 'Submit Order';
+    }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-    filterCategory('ALL');
-    updateCartUI();
-});
-</script>
+    function closeCartModal() {
+        document.getElementById('cartModal').style.display = 'none';
+    }
+
+    function renderCartModal() {
+        const tbody = document.getElementById('cartModalBody');
+        tbody.innerHTML = '';
+        let totalAmount = 0;
+
+        const items = Object.values(cart).filter(i => i.qty > 0);
+        if (!items.length) {
+            tbody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+        } else {
+            items.forEach(item => {
+                const sub = item.qty * item.price;
+                totalAmount += sub;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${escapeHtml(item.name)}</td>
+                        <td><input type="number" min="1" value="${item.qty}" onchange="changeCartQty('${item.id}', this.value)"></td>
+                        <td>₱${item.price.toFixed(2)}</td>
+                        <td>₱${sub.toFixed(2)}</td>
+                        <td><button onclick="removeFromCart('${item.id}')">Remove</button></td>
+                    </tr>
+                `;
+            });
+        }
+        document.getElementById('cartModalTotal').textContent = totalAmount.toFixed(2);
+    }
+
+    function changeCartQty(id, value) {
+        id = String(id);
+        let qty = parseInt(value, 10);
+        if (isNaN(qty) || qty <= 0) {
+            delete cart[id];
+        } else {
+            cart[id].qty = qty;
+        }
+        updateCartUI();
+        renderCartModal();
+    }
+
+    function removeFromCart(id) {
+        delete cart[id];
+        updateCartUI();
+        renderCartModal();
+    }
+
+    function submitOrder() {
+        const items = Object.values(cart).filter(i => i.qty > 0);
+        if (!items.length) return;
+
+        document.getElementById('loadingIndicator').style.display = 'block';
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = 'Submitted';
+
+        const payload = items.map(i => ({
+            id: i.id,
+            qty: i.qty,
+            price: i.price
+        }));
+        const fd = new FormData();
+        fd.append('items', JSON.stringify(payload));
+
+        fetch('api_create_order.php', {
+                method: 'POST',
+                body: fd
+            })
+            .then(r => r.json())
+            .then(res => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                if (!res.success) {
+                    alert(res.error || 'Error creating order.');
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').textContent = 'Submit Order';
+                    return;
+                }
+                const displayNum = res.order_number ?? res.order_id;
+                document.getElementById('successMessage').innerHTML =
+                    `<p>Order submitted successfully! Your order number is: <strong>${displayNum}</strong></p>`;
+                document.getElementById('successMessage').style.display = 'block';
+                cart = {};
+                updateCartUI();
+                // Keep modal open to show the order number
+            })
+            .catch(() => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                alert('Network error.');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').textContent = 'Submit Order';
+            });
+    }
+
+    function logout() {
+        // Assuming logout.php handles session destruction and redirect
+        window.location.href = 'logout.php';
+    }
+
+    function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        filterCategory('BUNDLES'); // Start with bundles
+    });
+    </script>
 </body>
+
 </html>
