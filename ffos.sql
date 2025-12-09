@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2025 at 05:22 AM
+-- Generation Time: Dec 09, 2025 at 01:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,7 +74,8 @@ INSERT INTO `bundle_items` (`id`, `bundle_id`, `bundle_menu_item_id`, `menu_item
 (35, 0, 46, 3, 1, '2025-12-02 03:37:09', '2025-12-02 03:37:09'),
 (36, 0, 46, 4, 1, '2025-12-02 03:37:09', '2025-12-02 03:37:09'),
 (37, 0, 48, 32, 1, '2025-12-02 16:37:10', '2025-12-02 16:37:10'),
-(38, 0, 48, 33, 1, '2025-12-02 16:37:10', '2025-12-02 16:37:10');
+(38, 0, 48, 33, 1, '2025-12-02 16:37:10', '2025-12-02 16:37:10'),
+(39, 0, 50, 3, 1, '2025-12-05 14:20:29', '2025-12-05 14:20:29');
 
 -- --------------------------------------------------------
 
@@ -129,7 +130,8 @@ INSERT INTO `menu_items` (`id`, `code`, `category_id`, `is_bundle`, `name`, `pri
 (45, 'mix and match', NULL, 1, 'Mix & Match', 214.00, 'uploads/prod_692dc82898e286.83312103.jpg', 1),
 (46, 'gkjkj', NULL, 1, 'jjhj', 245.00, NULL, 1),
 (47, 'dfasdfsadfsa', 5, 0, 'asdfas', 23123123.00, 'uploads/prod_692f1352e92111.26735908.jpg', 1),
-(48, 'asdasd', NULL, 1, 'asdsdasd', 98.00, NULL, 1);
+(48, 'asdasd', NULL, 1, 'asdsdasd', 98.00, NULL, 1),
+(50, 'adads', NULL, 1, 'asda', 60.00, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -261,7 +263,21 @@ INSERT INTO `orders` (`id`, `terminal_id`, `teller_terminal_id`, `total_amount`,
 (103, 1, 2, 200.00, 200.00, 0.00, 'CLAIMED', '2025-12-02 19:54:01', '2025-12-02 19:46:12', '2025-12-03 05:09:32', 1),
 (104, 1, NULL, 596.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-02 19:55:08', '2025-12-02 19:55:08', 2),
 (105, 1, 2, 200.00, 200.00, 0.00, 'CLAIMED', '2025-12-03 05:08:12', '2025-12-03 05:07:39', '2025-12-03 05:09:35', 3),
-(106, 1, 2, 98.00, 100.00, 2.00, 'IN_PROCESS', '2025-12-04 21:21:50', '2025-12-04 21:21:25', '2025-12-04 21:21:50', 1);
+(106, 1, 2, 98.00, 100.00, 2.00, 'IN_PROCESS', '2025-12-04 21:21:50', '2025-12-04 21:21:25', '2025-12-04 21:21:50', 1),
+(107, 1, NULL, 46246524.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 00:31:45', '2025-12-05 00:31:45', 2),
+(108, 1, 2, 6631.00, 7000.00, 369.00, 'IN_PROCESS', '2025-12-05 00:36:13', '2025-12-05 00:35:18', '2025-12-05 00:36:13', 3),
+(109, 1, NULL, 92492925.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 00:43:12', '2025-12-05 00:43:12', 4),
+(110, 1, NULL, 1488.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 00:43:34', '2025-12-05 00:43:34', 5),
+(111, 1, 2, 5208.00, 6000.00, 792.00, 'IN_PROCESS', '2025-12-05 01:04:03', '2025-12-05 01:03:29', '2025-12-05 01:04:03', 6),
+(112, 1, 2, 23123123.00, 23123123.00, 0.00, 'IN_PROCESS', '2025-12-05 01:22:24', '2025-12-05 01:21:10', '2025-12-05 01:22:24', 7),
+(113, 1, NULL, 158.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:03:03', '2025-12-05 07:03:03', 8),
+(114, 1, NULL, 79.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:03:33', '2025-12-05 07:03:33', 9),
+(115, 1, 2, 287.00, 300.00, 13.00, 'IN_PROCESS', '2025-12-05 07:17:34', '2025-12-05 07:03:53', '2025-12-05 07:17:34', 10),
+(116, 1, NULL, 129.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:05:01', '2025-12-05 07:05:01', 11),
+(117, 1, NULL, 245.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:13:07', '2025-12-05 07:13:07', 12),
+(118, 1, NULL, 445.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:13:31', '2025-12-05 07:13:31', 13),
+(119, 1, NULL, 200.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:13:40', '2025-12-05 07:13:40', 14),
+(120, 1, NULL, 890.00, 0.00, 0.00, 'UNPAID', NULL, '2025-12-05 07:15:13', '2025-12-05 07:15:13', 15);
 
 -- --------------------------------------------------------
 
@@ -503,7 +519,56 @@ INSERT INTO `order_items` (`id`, `order_id`, `menu_item_id`, `quantity`, `price`
 (388, 104, 7, 2, 200.00, 'CUSTOMER', 0.00),
 (389, 104, 48, 2, 98.00, 'CUSTOMER', 0.00),
 (391, 105, 7, 1, 200.00, 'CUSTOMER', 0.00),
-(393, 106, 48, 1, 98.00, 'CUSTOMER', 0.00);
+(393, 106, 48, 1, 98.00, 'CUSTOMER', 0.00),
+(394, 107, 38, 4, 45.00, 'CUSTOMER', 0.00),
+(395, 107, 40, 2, 49.00, 'CUSTOMER', 0.00),
+(396, 107, 47, 2, 23123123.00, 'CUSTOMER', 0.00),
+(405, 108, 6, 5, 290.00, 'CUSTOMER', 0.00),
+(406, 108, 7, 4, 200.00, 'CUSTOMER', 0.00),
+(407, 108, 27, 1, 79.00, 'CUSTOMER', 0.00),
+(408, 108, 28, 3, 99.00, 'CUSTOMER', 0.00),
+(409, 108, 29, 3, 129.00, 'CUSTOMER', 0.00),
+(410, 108, 45, 5, 214.00, 'CUSTOMER', 0.00),
+(411, 108, 46, 8, 245.00, 'CUSTOMER', 0.00),
+(412, 108, 48, 6, 98.00, 'CUSTOMER', 0.00),
+(413, 109, 2, 2, 140.00, 'CUSTOMER', 0.00),
+(414, 109, 39, 1, 55.00, 'CUSTOMER', 0.00),
+(415, 109, 40, 2, 49.00, 'CUSTOMER', 0.00),
+(416, 109, 47, 4, 23123123.00, 'CUSTOMER', 0.00),
+(417, 110, 3, 1, 60.00, 'CUSTOMER', 0.00),
+(418, 110, 6, 1, 290.00, 'CUSTOMER', 0.00),
+(419, 110, 27, 1, 79.00, 'CUSTOMER', 0.00),
+(420, 110, 28, 2, 99.00, 'CUSTOMER', 0.00),
+(421, 110, 29, 1, 129.00, 'CUSTOMER', 0.00),
+(422, 110, 32, 1, 39.00, 'CUSTOMER', 0.00),
+(423, 110, 33, 1, 59.00, 'CUSTOMER', 0.00),
+(424, 110, 34, 5, 35.00, 'CUSTOMER', 0.00),
+(425, 110, 45, 1, 214.00, 'CUSTOMER', 0.00),
+(426, 110, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(439, 111, 2, 2, 140.00, 'CUSTOMER', 0.00),
+(440, 111, 3, 8, 60.00, 'CUSTOMER', 0.00),
+(441, 111, 6, 2, 290.00, 'CUSTOMER', 0.00),
+(442, 111, 7, 2, 200.00, 'CUSTOMER', 0.00),
+(443, 111, 30, 2, 89.00, 'CUSTOMER', 0.00),
+(444, 111, 31, 5, 149.00, 'CUSTOMER', 0.00),
+(445, 111, 32, 4, 39.00, 'CUSTOMER', 0.00),
+(446, 111, 33, 5, 59.00, 'CUSTOMER', 0.00),
+(447, 111, 34, 7, 35.00, 'CUSTOMER', 0.00),
+(448, 111, 45, 2, 214.00, 'CUSTOMER', 0.00),
+(449, 111, 46, 5, 245.00, 'CUSTOMER', 0.00),
+(450, 111, 48, 2, 98.00, 'CUSTOMER', 0.00),
+(452, 112, 47, 1, 23123123.00, 'CUSTOMER', 0.00),
+(453, 113, 27, 2, 79.00, 'CUSTOMER', 0.00),
+(454, 114, 27, 1, 79.00, 'CUSTOMER', 0.00),
+(457, 116, 29, 1, 129.00, 'CUSTOMER', 0.00),
+(458, 117, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(459, 118, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(460, 118, 46, 1, 245.00, 'CUSTOMER', 0.00),
+(461, 119, 7, 1, 200.00, 'CUSTOMER', 0.00),
+(462, 120, 7, 2, 200.00, 'CUSTOMER', 0.00),
+(463, 120, 46, 2, 245.00, 'CUSTOMER', 0.00),
+(464, 115, 27, 2, 79.00, 'CUSTOMER', 0.00),
+(465, 115, 29, 1, 129.00, 'CUSTOMER', 0.00);
 
 -- --------------------------------------------------------
 
@@ -514,6 +579,7 @@ INSERT INTO `order_items` (`id`, `order_id`, `menu_item_id`, `quantity`, `price`
 CREATE TABLE `product_categories` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -521,12 +587,12 @@ CREATE TABLE `product_categories` (
 -- Dumping data for table `product_categories`
 --
 
-INSERT INTO `product_categories` (`id`, `name`, `created_at`) VALUES
-(1, 'Burgers', '2025-12-01 01:38:45'),
-(2, 'Chicken', '2025-12-01 01:38:45'),
-(3, 'Fries & Sides', '2025-12-01 01:38:45'),
-(4, 'Drinks', '2025-12-01 01:38:45'),
-(5, 'Desserts', '2025-12-01 02:20:08');
+INSERT INTO `product_categories` (`id`, `name`, `img`, `created_at`) VALUES
+(1, 'Burgers', 'uploads/prod_69329199d72855.19269283.jpg', '2025-12-01 01:38:45'),
+(2, 'Chicken', 'uploads/prod_693288d5bda506.59690714.jpg', '2025-12-01 01:38:45'),
+(3, 'Fries & Sides', '', '2025-12-01 01:38:45'),
+(4, 'Drinks', '', '2025-12-01 01:38:45'),
+(5, 'Desserts', '', '2025-12-01 02:20:08');
 
 -- --------------------------------------------------------
 
@@ -623,25 +689,25 @@ ALTER TABLE `bundles`
 -- AUTO_INCREMENT for table `bundle_items`
 --
 ALTER TABLE `bundle_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=394;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=466;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
