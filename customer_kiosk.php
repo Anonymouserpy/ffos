@@ -35,401 +35,472 @@ $items = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Drink Ordering Kiosk</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: 'Roboto', Arial, sans-serif;
-        background: #f5f5f5;
-        color: #333;
-        overflow: hidden;
-    }
+body {
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    overflow: hidden;
+}
 
-    .kiosk {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background: #ffffff;
-    }
+.kiosk {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+}
 
-    .banner {
-        background: linear-gradient(135deg, #d4680eff);
-        padding: 20px 30px;
-        text-align: center;
-        color: #fff;
-        position: relative;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        flex-shrink: 0;
-    }
+/* McDonald's-style Banner */
+.banner {
+    background: linear-gradient(135deg, #DA291C 0%, #FFCC00 100%);
+    padding: 20px 30px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    border-bottom: 4px solid #FFCC00;
+}
 
-    .banner h2 {
-        margin: 0;
-        font-size: 2rem;
-        font-weight: 700;
-    }
+.banner h2 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
 
-    .banner p {
-        margin: 5px 0 0;
-        font-size: 1rem;
-        font-weight: 300;
-    }
+.banner p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #fff;
+}
 
-    .logout-btn {
-        position: absolute;
-        top: 15px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: #fff;
-        font-size: 1.5rem;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
+.logout-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
+    color: #fff;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
 
-    .logout-btn:hover {
-        background: rgba(255, 255, 255, 0.4);
-        transform: scale(1.1);
-    }
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
 
-    .main {
-        display: flex;
-        flex: 1;
-        overflow: hidden;
-    }
+.main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
 
+/* McDonald's Sidebar */
+.sidebar {
+    width: 280px;
+    background: #DA291C;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #fff;
+}
+
+.sidebar li:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .active {
+    background: #FFCC00;
+    color: #DA291C;
+    font-weight: 700;
+    border-left: 5px solid #fff;
+}
+
+.category-img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Product Grid */
+.products {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    padding: 25px;
+    gap: 25px;
+    overflow-y: auto;
+    background: #f8f8f8;
+}
+
+.item {
+    background: #ffffff;
+    border: 3px solid #FFCC00;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(218, 41, 28, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 220px;
+    position: relative;
+}
+
+.item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(218, 41, 28, 0.2);
+    border-color: #DA291C;
+}
+
+.item img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #f0f0f0;
+    margin-bottom: 15px;
+    border: 2px solid #FFCC00;
+}
+
+.item .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+    line-height: 1.2;
+}
+
+.item .price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #DA291C;
+    background: #FFCC00;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: auto;
+}
+
+/* McDonald's Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #DA291C;
+    padding: 20px 30px;
+    flex-shrink: 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #FFCC00;
+}
+
+.cancel {
+    background: #666;
+    border: none;
+    padding: 14px 28px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.cancel:hover {
+    background: #555;
+    transform: scale(1.05);
+}
+
+.pay {
+    background: #FFCC00;
+    border: none;
+    padding: 14px 28px;
+    color: #DA291C;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.pay:hover {
+    background: #ffd633;
+    transform: scale(1.05);
+}
+
+.total {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #FFCC00;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* McDonald's Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(218, 41, 28, 0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 5px solid #FFCC00;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #DA291C;
+    padding-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #DA291C;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 28px;
+    color: #DA291C;
+    transition: color 0.3s ease;
+    font-weight: bold;
+}
+
+.close:hover {
+    color: #FFCC00;
+}
+
+.modal-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.modal-body th {
+    background: #DA291C;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    border: none;
+}
+
+.modal-body td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-body input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 2px solid #FFCC00;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.modal-body button {
+    background: #DA291C;
+    border: none;
+    padding: 8px 16px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.modal-body button:hover {
+    background: #b82217;
+}
+
+.modal-total {
+    text-align: right;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #DA291C;
+    padding-top: 15px;
+    border-top: 2px solid #FFCC00;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #FFCC00;
+    border: none;
+    color: #DA291C;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.submit-btn:hover {
+    background: #ffd633;
+}
+
+/* Loading state */
+.loading {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #DA291C;
+}
+
+.success-message {
+    display: none;
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 2px solid #c3e6cb;
+}
+
+/* Accessibility */
+.sidebar li:focus,
+.item:focus,
+.cancel:focus,
+.pay:focus,
+.logout-btn:focus,
+.close:focus,
+.submit-btn:focus {
+    outline: 3px solid #FFCC00;
+    outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .sidebar {
-        width: 300px;
-        background: #ffffff;
-        border-right: 1px solid #e0e0e0;
-        overflow-y: auto;
-        flex-shrink: 0;
-        box-shadow: inset -1px 0 5px rgba(0, 0, 0, 0.05);
+        width: 220px;
     }
-
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar li {
-        padding: 15px 20px;
-        border-bottom: 1px solid #f0f0f0;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: background 0.3s ease, color 0.3s ease;
-        font-weight: 500;
-    }
-
-    .sidebar li:hover {
-        background: #f9f9f9;
-    }
-
-    .sidebar .active {
-        background: #ff9900ff;
-        color: #fff;
-        font-weight: 700;
-        border-left: 4px solid #cc1010ff;
-    }
-
-    .category-img {
-        width: 24px;
-        height: 24px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-
+    
     .products {
-        flex: 1;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        padding: 20px;
-        gap: 20px;
-        overflow-y: auto;
-        background: #f9f9f9;
-    }
-
-    .item {
-        background: #ffffff;
-        border: 1px solid #e0e0e0;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         padding: 15px;
-        text-align: center;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 200px;
-        /* Fixed height for uniform boxes */
-        position: relative;
+        gap: 15px;
     }
-
-
-    .item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        border-color: #ff0000ff;
+    
+    .banner h2 {
+        font-size: 1.5rem;
     }
-
-    .item img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border-radius: 8px;
-        background: #ddd;
-        margin-bottom: 10px;
-    }
-
-    .item .name {
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #333;
-        line-height: 1.2;
-    }
-
-    .item .price {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #ff0000ff;
-    }
-
+    
     .footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f0f0f0;
-        padding: 15px 30px;
-        border-top: 1px solid #ddd;
-        flex-shrink: 0;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
     }
-
-    .cancel {
-        background: #dc3545;
-        border: none;
-        padding: 12px 24px;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .cancel:hover {
-        background: #c82333;
-        transform: scale(1.05);
-    }
-
-    .pay {
-        background: #28a745;
-        border: none;
-        padding: 12px 24px;
-        color: white;
-        border-radius: 8px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .pay:hover {
-        background: #218838;
-        transform: scale(1.05);
-    }
-
+    
     .total {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #333;
+        order: -1;
     }
-
-    /* Modal for cart */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        animation: fadeIn 0.3s ease;
+    
+    .item {
+        height: 200px;
+        padding: 15px;
     }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
+    
+    .item img {
+        width: 100px;
+        height: 100px;
     }
+}
 
-    .modal-content {
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 500px;
-        max-height: 80%;
-        overflow-y: auto;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+@media (max-width: 480px) {
+    .sidebar {
+        width: 180px;
     }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #e0e0e0;
-        padding-bottom: 10px;
+    
+    .products {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        padding: 10px;
+        gap: 10px;
     }
-
-    .modal-header h3 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 700;
+    
+    .item {
+        height: 180px;
+        padding: 10px;
     }
-
-    .close {
-        cursor: pointer;
-        font-size: 24px;
-        color: #999;
-        transition: color 0.3s ease;
+    
+    .item img {
+        width: 90px;
+        height: 90px;
     }
-
-    .close:hover {
-        color: #333;
+    
+    .banner {
+        padding: 15px 20px;
     }
-
-    .modal-body table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
+    
+    .footer {
+        padding: 12px 15px;
     }
-
-    .modal-body th,
-    .modal-body td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .modal-body th {
-        background: #f9f9f9;
-        font-weight: 600;
-    }
-
-    .modal-body input[type="number"] {
-        width: 60px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .modal-body button {
-        background: #dc3545;
-        border: none;
-        padding: 5px 10px;
-        color: white;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background 0.3s ease;
-    }
-
-    .modal-body button:hover {
-        background: #c82333;
-    }
-
-    .modal-total {
-        text-align: right;
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 12px;
-        background: #28a745;
-        border: none;
-        color: white;
-        border-radius: 8px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .submit-btn:hover {
-        background: #218838;
-    }
-
-    /* Loading state */
-    .loading {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.2rem;
-        color: #666;
-    }
-
-    /* Accessibility */
-    .sidebar li:focus,
-    .item:focus,
-    .cancel:focus,
-    .pay:focus,
-    .logout-btn:focus,
-    .close:focus,
-    .submit-btn:focus {
-        outline: 2px solid #007bff;
-        outline-offset: 2px;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 250px;
-        }
-
-        .products {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            padding: 15px;
-        }
-
-        .banner h2 {
-            font-size: 1.5rem;
-        }
-
-        .footer {
-            padding: 10px 20px;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .total {
-            order: -1;
-        }
-    }
-    </style>
+}
+</style>
 </head>
 
 <body>

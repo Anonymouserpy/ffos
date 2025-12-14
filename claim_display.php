@@ -48,173 +48,359 @@ foreach ($rows as $r) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-main: #020617;        /* very dark navy */
-            --bg-panel: #020617;
-            --bg-panel-muted: #020617;
-            --yellow-claim: #facc15;   /* bright yellow */
-            --cyan-process: #22c55e;   /* greenish for "in process" */
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-        }
+    /* McDonald's Colors */
+    :root {
+        --mcd-red: #DA291C;
+        --mcd-yellow: #FFCC00;
+        --mcd-light-yellow: #ffde59;
+        --mcd-dark-red: #b82217;
+        --mcd-light-bg: #fff9e6;
+        --mcd-green: #22c55e;
+        --mcd-dark-green: #065f46;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            overflow: hidden;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
 
-        .navbar {
-            background: #000;
-        }
+    /* Navbar - McDonald's Style */
+    .navbar {
+        background: linear-gradient(135deg, var(--mcd-red) 0%, var(--mcd-dark-red) 100%);
+        border-bottom: 4px solid var(--mcd-yellow);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        padding: 12px 0;
+    }
 
-        .screen-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-        }
+    .screen-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.05em;
+    }
 
-        .main-wrapper {
-            padding: 0.75rem 1.25rem 1.25rem;
-        }
+    .navbar-text {
+        color: var(--mcd-yellow) !important;
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
 
+    .btn-outline-light {
+        border-color: var(--mcd-yellow) !important;
+        color: var(--mcd-yellow) !important;
+        font-weight: 600;
+    }
+
+    .btn-outline-light:hover {
+        background-color: var(--mcd-yellow) !important;
+        color: var(--mcd-red) !important;
+        border-color: var(--mcd-yellow) !important;
+    }
+
+    /* Main Wrapper */
+    .main-wrapper {
+        padding: 1.5rem 1.5rem 2rem;
+        height: calc(100vh - 80px);
+        overflow: hidden;
+    }
+
+    /* Panels */
+    .panel {
+        background: white;
+        border-radius: 15px;
+        border: 4px solid var(--mcd-yellow);
+        box-shadow: 0 10px 25px rgba(218, 41, 28, 0.15);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        padding: 1rem 1.5rem;
+        background: linear-gradient(to right, var(--mcd-red), var(--mcd-dark-red));
+        color: white !important;
+        border-bottom: 3px solid var(--mcd-yellow);
+    }
+
+    .panel-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: white;
+        margin: 0;
+    }
+
+    .panel-sub {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-top: 0.25rem;
+        font-weight: 400;
+    }
+
+    .text-warning {
+        color: var(--mcd-yellow) !important;
+        font-weight: 500;
+    }
+
+    .panel-body {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    /* Scrollbar Styling */
+    .panel-body::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 5px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+        background: var(--mcd-red);
+        border-radius: 5px;
+        border: 2px solid #f1f1f1;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb:hover {
+        background: var(--mcd-dark-red);
+    }
+
+    /* Claim Tiles (Left - READY) */
+    .claim-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+        align-items: center;
+        min-height: 100%;
+    }
+
+    .claim-tile-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .claim-tile-wrapper:hover {
+        transform: translateY(-5px);
+    }
+
+    .claim-tile {
+        width: 200px;
+        height: 160px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        background: var(--mcd-yellow);
+        color: var(--mcd-red);
+        box-shadow: 0 15px 35px rgba(218, 41, 28, 0.25);
+        border: 5px solid white;
+        font-size: 3.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .claim-tile::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+        animation: shine 3s infinite linear;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .claim-btn {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        background: var(--mcd-red) !important;
+        border-color: var(--mcd-red) !important;
+        color: white !important;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .claim-btn:hover {
+        background: var(--mcd-dark-red) !important;
+        border-color: var(--mcd-dark-red) !important;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(218, 41, 28, 0.3);
+    }
+
+    /* In-Process Tiles (Right) */
+    .process-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        justify-content: center;
+        align-items: center;
+        min-height: 100%;
+    }
+
+    .process-tile {
+        width: 140px;
+        height: 110px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        background: linear-gradient(135deg, var(--mcd-green), var(--mcd-dark-green));
+        color: white;
+        box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        border: 3px solid white;
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .process-tile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(34, 197, 94, 0.4);
+    }
+
+    /* Empty Messages */
+    .empty-message {
+        text-align: center;
+        margin-top: 3rem;
+        color: #666;
+        font-size: 1.1rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        border: 2px dashed #ddd;
+    }
+
+    /* Responsive Design */
+    @media (min-width: 1200px) {
+        .claim-tile {
+            width: 220px;
+            height: 180px;
+            font-size: 4rem;
+        }
+        
+        .process-tile {
+            width: 160px;
+            height: 130px;
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 991.98px) {
         .panel {
-            background: var(--bg-panel);
-            border-radius: 0.75rem;
-            border: 1px solid #1f2937;
-            box-shadow: 0 10px 25px rgba(15,23,42,0.9);
-            height: calc(100vh - 70px);
-            display: flex;
-            flex-direction: column;
+            height: 500px;
+            margin-bottom: 1.5rem;
         }
-
-        .panel-header {
-            padding: 0.75rem 1rem 0.25rem;
-            border-bottom: 1px solid #111827;
-        }
-
-        .panel-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .panel-sub {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .panel-body {
-            flex: 1;
-            padding: 0.75rem 0.75rem 0.75rem;
+        
+        .main-wrapper {
+            height: auto;
             overflow-y: auto;
         }
-
-        .panel-body::-webkit-scrollbar {
-            width: 8px;
-        }
-        .panel-body::-webkit-scrollbar-track {
-            background: #020617;
-        }
-        .panel-body::-webkit-scrollbar-thumb {
-            background: #4b5563;
-            border-radius: 999px;
-        }
-
-        /* Claim tiles (left) */
-        .claim-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-
-        .claim-tile-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
+        
         .claim-tile {
-            min-width: 160px;
-            min-height: 130px;
-            border-radius: 0.75rem;
-            padding: 0.4rem 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            background: var(--yellow-claim);
-            color: #111827;
-            box-shadow: 0 15px 35px rgba(250,204,21,0.45);
-            border: 2px solid #fef3c7;
-            font-size: 2.2rem;
+            width: 180px;
+            height: 140px;
+            font-size: 3rem;
         }
-
-        .claim-btn {
-            margin-top: 0.25rem;
-            font-size: 0.75rem;
-            padding: 0.2rem 0.7rem;
-            border-radius: 999px;
-        }
-
-        /* In-process tiles (right) */
-        .process-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
+        
         .process-tile {
-            min-width: 120px;
-            min-height: 90px;
-            border-radius: 0.75rem;
-            padding: 0.3rem 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            background: radial-gradient(circle at top left, #22c55e, #065f46);
-            color: #ecfdf5;
-            box-shadow: 0 12px 30px rgba(16,185,129,0.4);
-            border: 1px solid #bbf7d0;
-            font-size: 1.6rem;
+            width: 120px;
+            height: 100px;
+            font-size: 1.8rem;
         }
+    }
 
-        .empty-message {
-            text-align: center;
-            margin-top: 2.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
+    @media (max-width: 768px) {
+        .screen-title {
+            font-size: 1.4rem;
         }
+        
+        .panel-title {
+            font-size: 1.2rem;
+        }
+        
+        .claim-tile {
+            width: 150px;
+            height: 120px;
+            font-size: 2.5rem;
+        }
+        
+        .process-tile {
+            width: 100px;
+            height: 80px;
+            font-size: 1.5rem;
+        }
+        
+        .claim-grid,
+        .process-grid {
+            gap: 1rem;
+        }
+        
+        .claim-btn {
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+        }
+    }
 
-        @media (min-width: 1200px) {
-            .claim-tile {
-                min-width: 190px;
-                min-height: 150px;
-                font-size: 2.8rem;
-            }
-            .process-tile {
-                min-width: 140px;
-                min-height: 100px;
-                font-size: 1.8rem;
-            }
+    @media (max-width: 576px) {
+        .main-wrapper {
+            padding: 1rem;
         }
-
-        @media (max-width: 991.98px) {
-            .panel {
-                height: auto;
-                margin-bottom: 0.75rem;
-            }
+        
+        .panel-header {
+            padding: 0.75rem 1rem;
         }
-    </style>
+        
+        .panel-body {
+            padding: 1rem;
+        }
+        
+        .claim-grid,
+        .process-grid {
+            gap: 0.75rem;
+        }
+        
+        .claim-tile {
+            width: 130px;
+            height: 100px;
+            font-size: 2rem;
+        }
+        
+        .process-tile {
+            width: 85px;
+            height: 70px;
+            font-size: 1.3rem;
+        }
+    }
+</style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark mb-0">

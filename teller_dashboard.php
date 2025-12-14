@@ -36,71 +36,374 @@ $menuItems = $prodStmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        font-size: 0.9rem;
-    }
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* McDonald's Colors */
+:root {
+    --mcd-red: #DA291C;
+    --mcd-yellow: #FFCC00;
+    --mcd-light-red: #ff5a4d;
+    --mcd-light-yellow: #ffde59;
+    --mcd-dark-red: #b82217;
+    --mcd-light-bg: #fff9e6;
+}
+
+/* Navbar - McDonald's Style */
+.navbar.bg-primary {
+    background: linear-gradient(135deg, var(--mcd-red) 0%, var(--mcd-dark-red) 100%) !important;
+    border-bottom: 4px solid var(--mcd-yellow);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-text {
+    color: var(--mcd-yellow) !important;
+    font-weight: 500;
+}
+
+.btn-outline-light {
+    border-color: var(--mcd-yellow) !important;
+    color: var(--mcd-yellow) !important;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--mcd-yellow) !important;
+    color: var(--mcd-red) !important;
+    border-color: var(--mcd-yellow) !important;
+}
+
+/* Main Card */
+.card {
+    border: 3px solid var(--mcd-yellow);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(218, 41, 28, 0.15);
+}
+
+.card-header {
+    background: linear-gradient(to right, var(--mcd-red), var(--mcd-light-red)) !important;
+    color: white !important;
+    border-bottom: 3px solid var(--mcd-yellow) !important;
+    font-weight: 600;
+}
+
+/* Status Filter Buttons */
+.btn-group .btn-outline-secondary {
+    border-color: #ccc;
+    color: #666;
+    background: white;
+}
+
+.btn-group .btn-outline-secondary.active {
+    background-color: var(--mcd-yellow) !important;
+    color: var(--mcd-red) !important;
+    border-color: var(--mcd-yellow) !important;
+    font-weight: 600;
+}
+
+.btn-group .btn-outline-secondary:hover:not(.active) {
+    background-color: var(--mcd-light-yellow);
+    color: var(--mcd-red);
+    border-color: var(--mcd-yellow);
+}
+
+/* Tables */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background-color: var(--mcd-red) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600;
+    padding: 12px 8px !important;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.table tbody tr:hover {
+    background-color: var(--mcd-light-bg) !important;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tbody td {
+    padding: 10px 8px !important;
+    vertical-align: middle;
+}
+
+/* Scrollable Tables */
+.table-scroll {
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid #eee;
+    border-radius: 8px;
+}
+
+.table-scroll-small {
+    max-height: 170px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px solid #eee;
+    border-radius: 8px;
+}
+
+.table-scroll-small2 {
+    height: 340px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px solid #eee;
+    border-radius: 8px;
+}
+
+.table-scroll thead th,
+.table-scroll-small thead th,
+.table-scroll-small2 thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: var(--mcd-red) !important;
+}
+
+/* Buttons */
+.btn-warning {
+    background-color: var(--mcd-yellow) !important;
+    border-color: var(--mcd-yellow) !important;
+    color: var(--mcd-red) !important;
+    font-weight: 600;
+}
+
+.btn-warning:hover {
+    background-color: var(--mcd-light-yellow) !important;
+    border-color: var(--mcd-light-yellow) !important;
+    color: var(--mcd-red) !important;
+}
+
+.btn-outline-danger {
+    color: var(--mcd-red) !important;
+    border-color: var(--mcd-red) !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--mcd-red) !important;
+    color: white !important;
+}
+
+.btn-secondary {
+    background-color: #666 !important;
+    border-color: #666 !important;
+    color: white !important;
+}
+
+.btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+.btn-info {
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+}
+
+.btn-outline-primary {
+    border-color: var(--mcd-red) !important;
+    color: var(--mcd-red) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--mcd-red) !important;
+    color: white !important;
+}
+
+/* Modal Styling */
+.modal-content {
+    border: 4px solid var(--mcd-yellow);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(to right, var(--mcd-red), var(--mcd-light-red));
+    color: white;
+    border-bottom: 3px solid var(--mcd-yellow);
+    padding: 12px 20px !important;
+}
+
+.modal-title {
+    font-weight: 700;
+    color: white;
+}
+
+.btn-close {
+    filter: invert(1) brightness(2);
+}
+
+/* Card Headers in Modal */
+.card-header.bg-warning {
+    background: linear-gradient(to right, var(--mcd-yellow), var(--mcd-light-yellow)) !important;
+    color: var(--mcd-red) !important;
+    font-weight: 700;
+}
+
+.card-header.bg-info {
+    background: linear-gradient(to right, #17a2b8, #5bc0de) !important;
+    color: white !important;
+    font-weight: 700;
+}
+
+.card-header.bg-success {
+    background: linear-gradient(to right, #28a745, #5cb85c) !important;
+    color: white !important;
+    font-weight: 700;
+}
+
+/* Input Styling */
+.form-control {
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+.form-control:focus {
+    border-color: var(--mcd-yellow);
+    box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
+}
+
+.input-group-text {
+    background-color: var(--mcd-yellow);
+    border-color: var(--mcd-yellow);
+    color: var(--mcd-red);
+    font-weight: 600;
+}
+
+/* Badges */
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Status Colors in Table */
+td:contains('UNPAID') {
+    color: var(--mcd-red);
+    font-weight: 600;
+}
+
+td:contains('PAID'), td:contains('READY_FOR_CLAIM') {
+    color: #28a745;
+    font-weight: 600;
+}
+
+td:contains('IN_PROCESS') {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+td:contains('CLAIMED') {
+    color: #17a2b8;
+    font-weight: 600;
+}
+
+td:contains('CANCELLED') {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Footer and Totals */
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: 2px solid #eee;
+    font-weight: 600;
+}
+
+/* Search Input */
+#orderSearch {
+    border: 2px solid var(--mcd-yellow);
+    border-radius: 20px;
+    padding-left: 15px;
+}
+
+#orderSearch:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
+}
+
+/* Print Receipt Area */
+#printReceiptArea {
+    background: white;
+    border: 4px solid var(--mcd-yellow);
+}
+
+#printReceiptArea h2 {
+    color: var(--mcd-red);
+    font-weight: 700;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
     .table-scroll {
-        max-height: 340px;
-        overflow-y: auto;
-        overflow-x: hidden;
+        max-height: 250px;
     }
-
-    .table-scroll table {
-        margin-bottom: 0;
-    }
-
-    .table-scroll thead th {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background-color: #f8f9fa;
-    }
-
-    .table-scroll-small {
-        max-height: 170px;
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
-
+    
     .table-scroll-small2 {
-        height: 340px;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        height: 250px;
     }
+    
+    .btn-group {
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 5px;
+    }
+}
 
-    .table-scroll-small table,
-    .table-scroll-small2 table {
-        margin-bottom: 0;
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 10px;
     }
-
-    .table-scroll-small thead th,
-    .table-scroll-small2 thead th {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background-color: #f8f9fa;
+    
+    .col-md-7, .col-md-5 {
+        width: 100%;
     }
-
-    .menu-card-img {
-        height: 90px;
-        object-fit: cover;
+    
+    .d-flex.flex-md-row {
+        flex-direction: column !important;
     }
-
-    .order-item-row input[type="number"]::-webkit-outer-spin-button,
-    .order-item-row input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    
+    #orderSearch {
+        width: 100% !important;
+        margin-top: 10px;
     }
-
-    .order-item-row input[type="number"] {
-        -moz-appearance: textfield;
-    }
-
-    .status-filter-btn.active {
-        font-weight: 600;
-    }
-    </style>
+}
+</style>
 </head>
 
 

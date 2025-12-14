@@ -53,29 +53,282 @@ if (!empty($orderIds)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-size: 0.9rem; }
+    /* McDonald's Colors */
+    :root {
+        --mcd-red: #DA291C;
+        --mcd-yellow: #FFCC00;
+        --mcd-light-red: #ff5a4d;
+        --mcd-light-yellow: #ffde59;
+        --mcd-dark-red: #b82217;
+        --mcd-light-bg: #fff9e6;
+        --mcd-green: #28a745;
+    }
 
+    body {
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+
+    /* Navbar - McDonald's Style */
+    .navbar.bg-success {
+        background: linear-gradient(135deg, var(--mcd-red) 0%, var(--mcd-dark-red) 100%) !important;
+        border-bottom: 4px solid var(--mcd-yellow);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar-text {
+        color: var(--mcd-yellow) !important;
+        font-weight: 500;
+    }
+
+    .btn-outline-light {
+        border-color: var(--mcd-yellow) !important;
+        color: var(--mcd-yellow) !important;
+    }
+
+    .btn-outline-light:hover {
+        background-color: var(--mcd-yellow) !important;
+        color: var(--mcd-red) !important;
+        border-color: var(--mcd-yellow) !important;
+    }
+
+    /* Main Card */
+    .card {
+        border: 3px solid var(--mcd-yellow);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(218, 41, 28, 0.15);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(to right, var(--mcd-red), var(--mcd-light-red)) !important;
+        color: white !important;
+        border-bottom: 3px solid var(--mcd-yellow) !important;
+        font-weight: 600;
+        padding: 12px 15px !important;
+    }
+
+    .card-header .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    /* Status Filter Buttons */
+    .btn-group .btn-outline-secondary {
+        border-color: #ccc;
+        color: #666;
+        background: white;
+        transition: all 0.2s;
+    }
+
+    .btn-group .btn-outline-secondary.active {
+        background-color: var(--mcd-yellow) !important;
+        color: var(--mcd-red) !important;
+        border-color: var(--mcd-yellow) !important;
+        font-weight: 600;
+    }
+
+    .btn-group .btn-outline-secondary:hover:not(.active) {
+        background-color: var(--mcd-light-yellow);
+        color: var(--mcd-red);
+        border-color: var(--mcd-yellow);
+    }
+
+    /* Table Styling */
+    .table-scroll {
+        max-height: 480px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border: 2px solid #eee;
+        border-radius: 8px;
+    }
+    
+    .table-scroll table {
+        margin-bottom: 0;
+    }
+    
+    .table-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background-color: var(--mcd-red) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 600;
+        padding: 12px 8px !important;
+    }
+
+    .table-sm td, .table-sm th {
+        padding: 10px 8px !important;
+    }
+
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #eee;
+    }
+
+    .table tbody tr:hover {
+        background-color: var(--mcd-light-bg) !important;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Order Status Colors */
+    .table td:nth-child(4) { /* Status column */
+        font-weight: 600;
+    }
+
+    .table td:nth-child(4):contains('IN_PROCESS') {
+        color: #ff9800;
+        background-color: rgba(255, 152, 0, 0.1);
+        border-radius: 4px;
+        padding: 4px 8px !important;
+    }
+
+    .table td:nth-child(4):contains('READY_FOR_CLAIM') {
+        color: #28a745;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 4px;
+        padding: 4px 8px !important;
+    }
+
+    /* Order Number Styling */
+    .table td:first-child {
+        font-weight: 700;
+        color: var(--mcd-red);
+        font-size: 1.1rem;
+    }
+
+    /* Items List */
+    .items-list div {
+        line-height: 1.4;
+        margin-bottom: 3px;
+        padding: 4px 6px;
+        border-left: 3px solid var(--mcd-yellow);
+        background-color: rgba(255, 204, 0, 0.05);
+        border-radius: 3px;
+    }
+
+    .items-list .fw-semibold {
+        color: var(--mcd-red);
+        font-weight: 700;
+    }
+
+    /* Action Buttons */
+    .btn-success {
+        background: linear-gradient(to bottom, #28a745, #218838) !important;
+        border-color: #28a745 !important;
+        color: white !important;
+        font-weight: 600;
+        transition: all 0.2s;
+        border-radius: 6px;
+        padding: 6px 15px !important;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(to bottom, #218838, #1e7e34) !important;
+        border-color: #1e7e34 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-success:active {
+        transform: translateY(0);
+    }
+
+    /* Empty State */
+    .text-center.text-muted {
+        color: #666 !important;
+        padding: 40px !important;
+        font-size: 1rem;
+    }
+
+    /* Paid At Column */
+    .table td:nth-child(5) {
+        color: #555;
+        font-weight: 500;
+    }
+
+    /* Scrollbar Styling */
+    .table-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+        background: var(--mcd-red);
+        border-radius: 4px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+        background: var(--mcd-dark-red);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+        
         .table-scroll {
-            max-height: 480px;
-            overflow-y: auto;
-            overflow-x: hidden;
+            max-height: 400px;
         }
-        .table-scroll table { margin-bottom: 0; }
-        .table-scroll thead th {
-            position: sticky;
-            top: 0;
-            z-index: 5;
-            background-color: #f8f9fa;
+        
+        .btn-group {
+            flex-wrap: wrap;
         }
+        
+        .btn-group .btn {
+            margin-bottom: 5px;
+        }
+        
+        .card-header {
+            padding: 10px !important;
+        }
+        
+        .table td, .table th {
+            padding: 8px 6px !important;
+            font-size: 0.85rem;
+        }
+        
+        .btn-success {
+            padding: 5px 12px !important;
+            font-size: 0.85rem;
+        }
+    }
 
-        .status-filter-btn.active {
-            font-weight: 600;
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
         }
-
-        .items-list div {
-            line-height: 1.2;
+        
+        .card {
+            border-width: 2px;
         }
-    </style>
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-3">
